@@ -54,7 +54,7 @@ public class AddRecipeActivity extends AppCompatActivity {
                 String ingredients = ingredientsEditText.getText().toString();
                 String instructions = instructionsEditText.getText().toString();
 
-                Recipe newRecipe = new Recipe(0, title, description, ingredients, instructions, 0, null); // Устанавливаем null для пути к изображению
+                Recipe newRecipe = new Recipe(0, title, description, ingredients, instructions, 0, "");
 
                 long recipeId = databaseHelper.insertRecipe(newRecipe);
 
@@ -81,6 +81,7 @@ public class AddRecipeActivity extends AppCompatActivity {
         startActivityForResult(intent, PICK_IMAGE_REQUEST);
     }
 
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -89,6 +90,7 @@ public class AddRecipeActivity extends AppCompatActivity {
             selectedImageUri = data.getData();
             recipeImageView.setImageURI(selectedImageUri);
         }
+
     }
 
     public String saveImageToDatabase(Uri imageUri, long recipeId) {
@@ -106,6 +108,5 @@ public class AddRecipeActivity extends AppCompatActivity {
 
         return null;
     }
-
 
 }

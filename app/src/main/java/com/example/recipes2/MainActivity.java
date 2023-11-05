@@ -42,10 +42,23 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Обновить список рецептов из базы данных
+        List<Recipe> recipes = getRecipesFromDatabase();
+
+        // Обновить данные в адаптере и уведомить его об изменениях
+        recipeAdapter.updateRecipes(recipes);
+        recipeAdapter.notifyDataSetChanged();
+    }
+
+
     private List<Recipe> getRecipesFromDatabase() {
         // Здесь вы должны выполнить запрос к базе данных SQLite и вернуть список рецептов
         // Например, вы можете использовать SQLiteDatabase или Room для работы с базой данных.
         // В данном примере используется фиктивный метод.
         return databaseHelper.getRecipes();
     }
+
 }

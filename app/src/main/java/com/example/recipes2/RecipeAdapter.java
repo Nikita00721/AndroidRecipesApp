@@ -6,6 +6,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.recipes2.R;
@@ -29,21 +31,22 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
     }
 
     @Override
-    public void onBindViewHolder(RecipeViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull RecipeViewHolder holder, int position) {
         Recipe recipe = recipes.get(position);
 
-        // Используйте Picasso для загрузки изображения из пути и отображения его в ImageView
-        Picasso.get()
-                .load(recipe.getImagePath()) // Здесь используйте путь к изображению
-                .placeholder(R.drawable.default_recipe_image) // Заглушка, если изображение не загружено
-                .error(R.drawable.default_recipe_image) // Заглушка, если произошла ошибка загрузки
-                .fit()
-                .centerCrop()
-                .into(holder.recipeImageView);
-
+        // Установите заголовок и описание для карточки рецепта из объекта Recipe
         holder.recipeTitleTextView.setText(recipe.getTitle());
-        // Другие поля рецепта также могут быть отображены
+        holder.recipeDescriptionTextView.setText(recipe.getDescription()); // Убедитесь, что описание устанавливается правильно
+
+// Загрузите изображение рецепта с помощью Picasso (если путь к изображению доступен)
+        if (recipe.getImagePath() != null && !recipe.getImagePath().isEmpty()) {
+            Picasso.get().load(recipe.getImagePath()).into(holder.recipeImageView);
+        } else {
+            // Если путь к изображению отсутствует, установите изображение по умолчанию
+            holder.recipeImageView.setImageResource(R.drawable.default_recipe_image);
+        }
     }
+
 
     @Override
     public int getItemCount() {
@@ -53,12 +56,23 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
     class RecipeViewHolder extends RecyclerView.ViewHolder {
         ImageView recipeImageView;
         TextView recipeTitleTextView;
+        TextView recipeDescriptionTextView;
 
         public RecipeViewHolder(View itemView) {
             super(itemView);
             recipeImageView = itemView.findViewById(R.id.recipeImageView);
             recipeTitleTextView = itemView.findViewById(R.id.recipeTitleTextView);
+            recipeDescriptionTextView = itemView.findViewById(R.id.recipeDescriptionTextView); // Убедитесь, что переменная правильно связана
         }
+    }
+
+
+    public void setRecipes(List<Recipe> recipes) {
+        this.recipes = recipes;
+    }
+
+    public void updateRecipes(List<Recipe> recipes) {
+        this.recipes = recipes;
     }
 
 
