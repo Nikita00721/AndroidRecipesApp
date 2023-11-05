@@ -9,6 +9,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+
+import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import com.example.recipes2.R;
@@ -22,6 +24,7 @@ public class AddRecipeActivity extends AppCompatActivity {
     private Button attachImageButton, addRecipeButton;
     private Uri selectedImageUri;
     private RecipeDatabaseHelper databaseHelper;
+    private ActivityResultLauncher<Intent> imagePickerLauncher;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +76,7 @@ public class AddRecipeActivity extends AppCompatActivity {
                     // Обработка ошибки
                 }
             }
+
         });
     }
 
