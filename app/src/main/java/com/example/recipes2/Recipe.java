@@ -1,7 +1,7 @@
 package com.example.recipes2;
 
 public class Recipe {
-    private int id;
+    private long id;
     private String title;
     private String description;
     private String ingredients;
@@ -9,7 +9,7 @@ public class Recipe {
     private int authorId;
     private String imagePath; // Добавляем поле для хранения пути к изображению
 
-    public Recipe(int id, String title, String description, String ingredients, String instructions, int authorId, String imagePath) {
+    public Recipe(long id, String title, String description, String ingredients, String instructions, int authorId, String imagePath) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -20,9 +20,12 @@ public class Recipe {
     }
 
     public int getId() {
-        return id;
+        return (int) id;
     }
 
+    public void setId(long id) {
+        this.id = id;
+    }
     public String getTitle() {
         return title;
     }

@@ -1,21 +1,30 @@
 package com.example.recipes2;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import android.content.Intent;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-
-import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import com.example.recipes2.R;
 import com.example.recipes2.Recipe;
 import com.example.recipes2.RecipeDatabaseHelper;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 public class AddRecipeActivity extends AppCompatActivity {
     private static final int PICK_IMAGE_REQUEST = 1;
@@ -41,6 +50,18 @@ public class AddRecipeActivity extends AppCompatActivity {
 
         databaseHelper = new RecipeDatabaseHelper(this);
 
+        imagePickerLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                new ActivityResultCallback<ActivityResult>() {
+                    @Override
+                    public void onActivityResult(ActivityResult result) {
+                        if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                            selectedImageUri = result.getData().getData();
+                            recipeImageView.setImageURI(selectedImageUri);
+                        }
+                    }
+                }
+        );
 
         attachImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -62,55 +83,65 @@ public class AddRecipeActivity extends AppCompatActivity {
                 long recipeId = databaseHelper.insertRecipe(newRecipe);
 
                 if (recipeId > 0) {
+                    // Установите recipeId в новом рецепте
+                    newRecipe.setId(recipeId);
+
+                    // Добавьте проверку, что выбрано изображение
                     if (selectedImageUri != null) {
-                        // Сохраняем путь к изображению в базе данных и обновляем рецепт
-                        String imagePath = saveImageToDatabase(selectedImageUri, recipeId);
+                        String imagePath = saveImageToDatabase(selectedImageUri, recipeId); // Здесь используйте ID нового рецепта
                         if (imagePath != null) {
-                            newRecipe.setImagePath(imagePath);
-                            databaseHelper.updateRecipe(newRecipe);
+                            newRecipe.setImagePath(imagePath); // Сохраните путь к изображению в объект Recipe
                         }
                     }
+
+                    // Обновите рецепт в базе данных с путем к изображению
+                    databaseHelper.updateRecipe(newRecipe);
 
                     finish();
                 } else {
                     // Обработка ошибки
                 }
             }
-
         });
+
     }
 
     private void openImagePicker() {
         Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        startActivityForResult(intent, PICK_IMAGE_REQUEST);
-    }
-
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null) {
-            selectedImageUri = data.getData();
-            recipeImageView.setImageURI(selectedImageUri);
-        }
-
+        imagePickerLauncher.launch(intent);
     }
 
     public String saveImageToDatabase(Uri imageUri, long recipeId) {
-        RecipeDatabaseHelper databaseHelper = new RecipeDatabaseHelper(this);
-
-        // Преобразуйте Uri изображения в путь, передав ContentResolver и Uri
-        String imagePath = databaseHelper.getRealPathFromUri(getContentResolver(), imageUri);
-
-        if (imagePath != null) {
-            // Сохраните путь к изображению в базе данных, связав его с ID рецепта
-            imagePath = databaseHelper.saveImageToDatabase(imageUri, recipeId);
-
-            return imagePath;
+        String temporaryImagePath = copyImageToAppDirectory(imageUri, recipeId);
+        if (temporaryImagePath != null) {
+            databaseHelper.saveImageToDatabase(Uri.parse(temporaryImagePath), recipeId);
+            return temporaryImagePath;
         }
-
         return null;
     }
+
+
+    private String copyImageToAppDirectory(Uri imageUri, long recipeId) {
+        try {
+            InputStream inputStream = getContentResolver().openInputStream(imageUri);
+            File appDirectory = getFilesDir(); // Каталог вашего приложения
+            String temporaryImagePath = appDirectory + File.separator + "recipe_image_" + recipeId + ".jpg";
+            OutputStream outputStream = new FileOutputStream(temporaryImagePath);
+
+            byte[] buffer = new byte[1024];
+            int bytesRead;
+            while ((bytesRead = inputStream.read(buffer)) != -1) {
+                outputStream.write(buffer, 0, bytesRead);
+            }
+
+            inputStream.close();
+            outputStream.close();
+            return temporaryImagePath;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
 
 }

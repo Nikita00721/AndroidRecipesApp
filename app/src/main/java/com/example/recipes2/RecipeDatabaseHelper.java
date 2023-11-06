@@ -8,14 +8,22 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.net.Uri;
 import android.provider.MediaStore;
+import android.util.Log;
+
 import com.example.recipes2.RecipeAdapter;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 public class RecipeDatabaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "recipes.db";
     private static final int DATABASE_VERSION = 1;
-
     public static final String TABLE_RECIPES = "recipes";
     public static final String COLUMN_ID = "_id";
     public static final String COLUMN_TITLE = "title";
@@ -65,12 +73,13 @@ public class RecipeDatabaseHelper extends SQLiteOpenHelper {
         values.put(COLUMN_INGREDIENTS, recipe.getIngredients());
         values.put(COLUMN_INSTRUCTIONS, recipe.getInstructions());
         values.put(COLUMN_AUTHOR_ID, recipe.getAuthorId());
-        values.put(COLUMN_IMAGE_PATH, recipe.getImagePath()); // Сохраняем путь к изображению
+        values.put(COLUMN_IMAGE_PATH, recipe.getImagePath()); // Сохраняем фактический путь к изображению
 
         long recipeId = db.insert(TABLE_RECIPES, null, values);
         db.close();
         return recipeId;
     }
+
 
     public List<Recipe> getRecipes() {
         List<Recipe> recipes = new ArrayList<>();
@@ -122,26 +131,78 @@ public class RecipeDatabaseHelper extends SQLiteOpenHelper {
 
         db.update(TABLE_RECIPES, values, COLUMN_ID + " = ?", new String[]{String.valueOf(recipe.getId())});
         db.close();
+
+        // Добавьте отладочный вывод, чтобы проверить, что путь к изображению обновляется
+        Log.d("RecipeDatabaseHelper", "Image path updated for recipe ID: " + recipe.getId());
+    }
+
+
+    private String copyImageToAppDirectory(Uri imageUri) {
+        try {
+            InputStream inputStream = context.getContentResolver().openInputStream(imageUri);
+            File appDirectory = context.getFilesDir();
+            String temporaryImagePath = appDirectory + File.separator + "temp_image.jpg";
+            OutputStream outputStream = new FileOutputStream(temporaryImagePath);
+
+            byte[] buffer = new byte[1024];
+            int bytesRead;
+            while ((bytesRead = inputStream.read(buffer)) != -1) {
+                outputStream.write(buffer, 0, bytesRead);
+            }
+
+            inputStream.close();
+            outputStream.close();
+            return temporaryImagePath;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     public String saveImageToDatabase(Uri imageUri, long recipeId) {
-        // Преобразуйте Uri изображения в путь, передав ContentResolver и Uri
-        String imagePath = getRealPathFromUri(context.getContentResolver(), imageUri);
+        String temporaryImagePath = copyImageToAppDirectory(imageUri);
+        if (temporaryImagePath != null) {
+            // Создайте уникальное имя файла на основе recipeId
+            String uniqueImagePath = "recipe_image_" + recipeId + ".jpg";
+            File appDirectory = context.getFilesDir();
+            File destinationFile = new File(appDirectory, uniqueImagePath);
 
-        if (imagePath != null) {
-            // Сохраните путь к изображению в базе данных, связав его с ID рецепта
-            SQLiteDatabase db = this.getWritableDatabase();
-            ContentValues values = new ContentValues();
-            values.put(COLUMN_IMAGE_PATH, imagePath);
+            if (copyFile(new File(temporaryImagePath), destinationFile)) {
+                SQLiteDatabase db = this.getWritableDatabase();
+                ContentValues values = new ContentValues();
+                values.put(COLUMN_IMAGE_PATH, destinationFile.getAbsolutePath());
 
-            db.update(TABLE_RECIPES, values, COLUMN_ID + " = ?", new String[]{String.valueOf(recipeId)});
-            db.close();
+                int rowsUpdated = db.update(TABLE_RECIPES, values, COLUMN_ID + " = ?", new String[]{String.valueOf(recipeId)});
+                db.close();
 
-            return imagePath;
+                if (rowsUpdated > 0) {
+                    return destinationFile.getAbsolutePath();
+                }
+            }
         }
 
         return null;
     }
+
+
+    private boolean copyFile(File source, File destination) {
+        try {
+            FileInputStream inStream = new FileInputStream(source);
+            FileOutputStream outStream = new FileOutputStream(destination);
+            byte[] buffer = new byte[1024];
+            int length;
+            while ((length = inStream.read(buffer)) > 0) {
+                outStream.write(buffer, 0, length);
+            }
+            inStream.close();
+            outStream.close();
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
 
 
 
@@ -151,13 +212,11 @@ public class RecipeDatabaseHelper extends SQLiteOpenHelper {
 
         if (cursor != null && cursor.moveToFirst()) {
             int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-            String path = cursor.getString(columnIndex);
+            String path = "file://" + cursor.getString(columnIndex); // Добавьте "file://" перед путем к файлу
             cursor.close();
             return path;
         }
 
         return null;
     }
-
-
 }

@@ -1,6 +1,7 @@
 package com.example.recipes2;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,8 +12,10 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.recipes2.R;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
+import java.io.File;
 import java.util.List;
 
 public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeViewHolder> {
@@ -34,18 +37,17 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
     public void onBindViewHolder(@NonNull RecipeViewHolder holder, int position) {
         Recipe recipe = recipes.get(position);
 
-        // Установите заголовок и описание для карточки рецепта из объекта Recipe
         holder.recipeTitleTextView.setText(recipe.getTitle());
-        holder.recipeDescriptionTextView.setText(recipe.getDescription()); // Убедитесь, что описание устанавливается правильно
+        holder.recipeDescriptionTextView.setText(recipe.getDescription());
 
-// Загрузите изображение рецепта с помощью Picasso (если путь к изображению доступен)
         if (recipe.getImagePath() != null && !recipe.getImagePath().isEmpty()) {
-            Picasso.get().load(recipe.getImagePath()).into(holder.recipeImageView);
+            File imageFile = new File(recipe.getImagePath());
+            Picasso.get().load(imageFile).into(holder.recipeImageView);
         } else {
-            // Если путь к изображению отсутствует, установите изображение по умолчанию
             holder.recipeImageView.setImageResource(R.drawable.default_recipe_image);
         }
     }
+
 
 
     @Override
