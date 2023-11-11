@@ -23,7 +23,7 @@ import java.util.List;
 
 public class RecipeDatabaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "recipes.db";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 6;
     public static final String TABLE_RECIPES = "recipes";
     public static final String COLUMN_ID = "_id";
     public static final String COLUMN_TITLE = "title";
@@ -50,8 +50,7 @@ public class RecipeDatabaseHelper extends SQLiteOpenHelper {
                 COLUMN_INGREDIENTS + " TEXT, " +
                 COLUMN_INSTRUCTIONS + " TEXT, " +
                 COLUMN_AUTHOR_ID + " INTEGER, " +
-                COLUMN_IMAGE_RESOURCE_ID + " INTEGER, " +
-                COLUMN_IMAGE_PATH + " TEXT" + // Добавляем столбец для пути к изображению
+                COLUMN_IMAGE_PATH + " TEXT" + // Столбец для пути к изображению
                 ")";
         db.execSQL(createTableQuery);
     }
@@ -92,7 +91,6 @@ public class RecipeDatabaseHelper extends SQLiteOpenHelper {
                 COLUMN_INGREDIENTS,
                 COLUMN_INSTRUCTIONS,
                 COLUMN_AUTHOR_ID,
-                COLUMN_IMAGE_RESOURCE_ID,
                 COLUMN_IMAGE_PATH // Включаем путь к изображению
         };
 
@@ -106,10 +104,9 @@ public class RecipeDatabaseHelper extends SQLiteOpenHelper {
                 String ingredients = cursor.getString(cursor.getColumnIndex(COLUMN_INGREDIENTS));
                 String instructions = cursor.getString(cursor.getColumnIndex(COLUMN_INSTRUCTIONS));
                 int authorId = cursor.getInt(cursor.getColumnIndex(COLUMN_AUTHOR_ID));
-                int imageResourceId = cursor.getInt(cursor.getColumnIndex(COLUMN_IMAGE_RESOURCE_ID));
                 String imagePath = cursor.getString(cursor.getColumnIndex(COLUMN_IMAGE_PATH)); // Получаем путь к изображению
 
-                Recipe recipe = new Recipe(id, title, description, ingredients, instructions, authorId, String.valueOf(imageResourceId));
+                Recipe recipe = new Recipe(id, title, description, ingredients, instructions, authorId, imagePath);
                 recipe.setImagePath(imagePath); // Устанавливаем путь к изображению
                 recipes.add(recipe);
             } while (cursor.moveToNext());

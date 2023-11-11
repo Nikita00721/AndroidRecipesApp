@@ -2,6 +2,7 @@ package com.example.recipes2;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -40,6 +41,24 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        // Обработчик нажатия на элемент списка
+        recipeRecyclerView.addOnItemTouchListener(new RecyclerItemClickListener(this, recipeRecyclerView, new RecyclerItemClickListener.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                Recipe selectedRecipe = recipeAdapter.getRecipeAtPosition(position);
+                Log.d("СЮДА СМОТРИ", selectedRecipe.getTitle());
+                Log.d("СЮДА СМОТРИ", selectedRecipe.getDescription());
+                Log.d("re", "ТУТ НАЗВАНИЕ ИЗ МАЙН АКТИВИТИ" + selectedRecipe.getTitle());
+                if (selectedRecipe != null) {
+                    Intent intent = new Intent(MainActivity.this, RecipeDetailActivity.class);
+                    intent.putExtra("selectedRecipe", selectedRecipe);
+                    startActivity(intent);
+                }
+            }
+        }));
+
+
     }
 
     @Override

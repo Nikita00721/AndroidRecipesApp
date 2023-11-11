@@ -1,6 +1,7 @@
 package com.example.recipes2;
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,6 +38,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
     public void onBindViewHolder(@NonNull RecipeViewHolder holder, int position) {
         Recipe recipe = recipes.get(position);
 
+        // Устанавливаем данные в элементы макета
         holder.recipeTitleTextView.setText(recipe.getTitle());
         holder.recipeDescriptionTextView.setText(recipe.getDescription());
 
@@ -46,9 +48,18 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
         } else {
             holder.recipeImageView.setImageResource(R.drawable.default_recipe_image);
         }
+
+        // Обработка нажатия на карточк
+
     }
 
-
+    public Recipe getRecipeAtPosition(int position) {
+        if (position >= 0 && position < recipes.size()) {
+            return recipes.get(position);
+        } else {
+            return null;
+        }
+    }
 
     @Override
     public int getItemCount() {
