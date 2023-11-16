@@ -3,6 +3,8 @@ package com.example.recipes2;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -59,5 +61,20 @@ public class RecipeDetailActivity extends AppCompatActivity {
                 Picasso.get().load(imageFile).into(recipeImageView);
             }
         }
+
+        Button deleteButton = findViewById(R.id.deleteRecipeButton);
+        deleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Удаление рецепта из базы данных
+                deleteRecipeFromDatabase(selectedRecipe.getId());
+                finish();
+            }
+        });
+    }
+    private void deleteRecipeFromDatabase(long recipeId) {
+        RecipeDatabaseHelper databaseHelper = new RecipeDatabaseHelper(this);
+
+        databaseHelper.deleteRecipe(recipeId);
     }
 }
