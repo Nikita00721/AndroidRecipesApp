@@ -69,6 +69,5 @@ public class EditRecipeActivity extends AppCompatActivity {
                 finish(); // Закрыть текущую активность и вернуться назад
             }
         });
-
     }
 }

@@ -1,24 +1,37 @@
-<?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/lightGrey"
     tools:context=".MainActivity">
 
+    <!-- Toolbar -->
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:background="#6F47B0BD"
+        android:elevation="4dp"
+        android:layout_alignParentTop="true"
+        app:title="Мои рецепты"
+        app:titleTextColor="@color/white"
+        app:popupTheme="@style/AppTheme.PopupOverlay" />
+
+    <!-- RecyclerView -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recipeRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp"
-        android:clipToPadding="false"
-        android:scrollbarStyle="outsideInset"
-        app:layoutManager="LinearLayoutManager"
-        app:layout_constraintBottom_toTopOf="@id/addRecipeButton"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_below="@id/toolbar"
+    android:paddingStart="16dp"
+    android:paddingEnd="16dp"
+    android:clipToPadding="false"
+    android:scrollbarStyle="outsideInset"
+    app:layoutManager="LinearLayoutManager" />
 
+    <!-- FloatingActionButton -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/addRecipeButton"
         android:layout_width="wrap_content"
@@ -29,7 +42,7 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
-        app:backgroundTint="#2196F3"
+        app:backgroundTint="@color/blue"
         app:borderWidth="0dp"
         app:elevation="6dp"
         app:fabSize="normal"

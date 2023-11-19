@@ -6,6 +6,7 @@
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
     android:elevation="4dp"
+    android:background="@color/lightGrey"
     app:cardCornerRadius="8dp">
 
     <LinearLayout
@@ -25,6 +26,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Recipe Title"
+            android:textColor="@color/black"
             android:textSize="18sp"
             android:textStyle="bold"
             android:padding="8dp" />

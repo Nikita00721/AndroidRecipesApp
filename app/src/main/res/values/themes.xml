@@ -1,9 +1,17 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
-    <style name="Base.Theme.Recipes2" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Base application theme -->
+    <style name="Theme.Recipes2" parent="Theme.AppCompat.Light">
+        <!-- Customize your theme here -->
+        <item name="colorPrimary">#9FD4FF</item>
+        <item name="colorPrimaryDark">@color/grey</item>
+        <item name="colorAccent">@color/red</item>
+    </style>
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="AppTheme.NoActionBar" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Другие атрибуты стиля -->
     </style>
 
-    <style name="Theme.Recipes2" parent="Base.Theme.Recipes2" />
 </resources>
