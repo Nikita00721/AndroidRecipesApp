@@ -13,5 +13,7 @@
     <style name="AppTheme.NoActionBar" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Другие атрибуты стиля -->
     </style>
+<style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
 
+</style>
 </resources>
