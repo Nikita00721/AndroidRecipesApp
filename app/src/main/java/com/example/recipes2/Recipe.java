@@ -24,6 +24,26 @@ public class Recipe implements Parcelable {
         this.imagePath = imagePath; // Инициализируем поле для пути к изображению
     }
 
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setIngredients(String ingredients) {
+        this.ingredients = ingredients;
+    }
+
+    public void setInstructions(String instructions) {
+        this.instructions = instructions;
+    }
+
+    public void setAuthorId(int authorId) {
+        this.authorId = authorId;
+    }
+
     public int getId() {
         return (int) id;
     }

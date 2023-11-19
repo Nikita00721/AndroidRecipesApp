@@ -18,6 +18,7 @@ public class RecipeDetailActivity extends AppCompatActivity {
     private Recipe selectedRecipe;
     private ImageView recipeImageView;
     private TextView titleTextView, descriptionTextView, ingredientsTextView, instructionsTextView;
+    private static final int EDIT_RECIPE_REQUEST_CODE = 1; // Код запроса для редактирования рецепта
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +38,20 @@ public class RecipeDetailActivity extends AppCompatActivity {
             // Обработка ситуации, когда selectedRecipe равен null
             Log.d("RecipeDetailActivity", "selectedRecipe is null");
         }
+
+        // Находим кнопку "Редактировать рецепт" в макете
+        Button editRecipeButton = findViewById(R.id.editRecipeButton);
+
+        // Устанавливаем обработчик нажатия на кнопку
+        editRecipeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(RecipeDetailActivity.this, EditRecipeActivity.class);
+                intent.putExtra("selectedRecipe", selectedRecipe);
+                startActivityForResult(intent, EDIT_RECIPE_REQUEST_CODE);
+            }
+        });
+
 
         // Остальной код Activity
         recipeImageView = findViewById(R.id.recipeImageView);
@@ -71,10 +86,40 @@ public class RecipeDetailActivity extends AppCompatActivity {
                 finish();
             }
         });
+
+
     }
     private void deleteRecipeFromDatabase(long recipeId) {
         RecipeDatabaseHelper databaseHelper = new RecipeDatabaseHelper(this);
 
         databaseHelper.deleteRecipe(recipeId);
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == EDIT_RECIPE_REQUEST_CODE && resultCode == RESULT_OK && data != null) {
+            Recipe editedRecipe = data.getParcelableExtra("editedRecipe");
+            if (editedRecipe != null) {
+                // Обновляем данные рецепта
+                selectedRecipe = editedRecipe;
+                // Обновляем отображение
+                updateRecipeDetails();
+            }
+        }
+    }
+
+    private void updateRecipeDetails() {
+        titleTextView.setText(selectedRecipe.getTitle());
+        descriptionTextView.setText(selectedRecipe.getDescription());
+        ingredientsTextView.setText(selectedRecipe.getIngredients());
+        instructionsTextView.setText(selectedRecipe.getInstructions());
+
+        if (selectedRecipe.getImagePath() != null && !selectedRecipe.getImagePath().isEmpty()) {
+            File imageFile = new File(selectedRecipe.getImagePath());
+            Picasso.get().load(imageFile).into(recipeImageView);
+        }
+    }
+
 }
