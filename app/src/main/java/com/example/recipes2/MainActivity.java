@@ -74,9 +74,6 @@ public class MainActivity extends AppCompatActivity {
 
 
     private List<Recipe> getRecipesFromDatabase() {
-        // Здесь вы должны выполнить запрос к базе данных SQLite и вернуть список рецептов
-        // Например, вы можете использовать SQLiteDatabase или Room для работы с базой данных.
-        // В данном примере используется фиктивный метод.
         return databaseHelper.getRecipes();
     }
 

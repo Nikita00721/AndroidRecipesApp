@@ -83,18 +83,14 @@ public class AddRecipeActivity extends AppCompatActivity {
                 long recipeId = databaseHelper.insertRecipe(newRecipe);
 
                 if (recipeId > 0) {
-                    // Установите recipeId в новом рецепте
                     newRecipe.setId(recipeId);
-
-                    // Добавьте проверку, что выбрано изображение
                     if (selectedImageUri != null) {
-                        String imagePath = saveImageToDatabase(selectedImageUri, recipeId); // Здесь используйте ID нового рецепта
+                        String imagePath = saveImageToDatabase(selectedImageUri, recipeId);
                         if (imagePath != null) {
-                            newRecipe.setImagePath(imagePath); // Сохраните путь к изображению в объект Recipe
+                            newRecipe.setImagePath(imagePath);
                         }
                     }
 
-                    // Обновите рецепт в базе данных с путем к изображению
                     databaseHelper.updateRecipe(newRecipe);
 
                     finish();

@@ -48,7 +48,7 @@ public class EditRecipeActivity extends AppCompatActivity {
                 selectedRecipe.setIngredients(editedIngredients);
                 selectedRecipe.setInstructions(editedInstructions);
 
-                // Сохраняем изменения в базе данных (пример)
+                // Сохраняем изменения
                 RecipeDatabaseHelper databaseHelper = new RecipeDatabaseHelper(EditRecipeActivity.this);
                 databaseHelper.updateRecipe(selectedRecipe);
 
@@ -57,7 +57,7 @@ public class EditRecipeActivity extends AppCompatActivity {
                 setResult(RESULT_OK, resultIntent);
                 finish();
 
-                // Закрываем активность редактирования и возвращаемся на страницу деталей рецепта
+
                 finish();
             }
         });

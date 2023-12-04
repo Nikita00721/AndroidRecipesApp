@@ -25,15 +25,11 @@ public class RecipeDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recipe_detail);
 
-        // Уберите объявление "Recipe" перед "selectedRecipe"
         selectedRecipe = getIntent().getParcelableExtra("selectedRecipe");
 
         if (selectedRecipe != null) {
-            // В этом месте вы можете быть уверены, что selectedRecipe - объект типа Recipe
-            // Вы можете использовать его безопасно
             Log.d("RecipeDetailActivity", "Recipe Title: " + selectedRecipe.getTitle());
             Log.d("RecipeDetailActivity", "Recipe Description: " + selectedRecipe.getDescription());
-            // Остальной код
         } else {
             // Обработка ситуации, когда selectedRecipe равен null
             Log.d("RecipeDetailActivity", "selectedRecipe is null");
@@ -53,14 +49,12 @@ public class RecipeDetailActivity extends AppCompatActivity {
         });
 
 
-        // Остальной код Activity
         recipeImageView = findViewById(R.id.recipeImageView);
         titleTextView = findViewById(R.id.titleTextView);
         descriptionTextView = findViewById(R.id.descriptionTextView);
         ingredientsTextView = findViewById(R.id.ingredientsTextView);
         instructionsTextView = findViewById(R.id.instructionsTextView);
 
-        // Отображаем данные о рецепте
         if (selectedRecipe != null) {
             Log.d("RecipeDetailActivity", "Recipe Title: " + selectedRecipe.getTitle());
             Log.d("RecipeDetailActivity", "Recipe Description: " + selectedRecipe.getDescription());

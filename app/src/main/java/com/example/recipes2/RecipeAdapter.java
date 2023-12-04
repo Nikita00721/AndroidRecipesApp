@@ -75,7 +75,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
             super(itemView);
             recipeImageView = itemView.findViewById(R.id.recipeImageView);
             recipeTitleTextView = itemView.findViewById(R.id.recipeTitleTextView);
-            recipeDescriptionTextView = itemView.findViewById(R.id.recipeDescriptionTextView); // Убедитесь, что переменная правильно связана
+            recipeDescriptionTextView = itemView.findViewById(R.id.recipeDescriptionTextView);
         }
     }
 

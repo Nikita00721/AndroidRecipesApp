@@ -12,7 +12,7 @@ public class Recipe implements Parcelable {
     private String ingredients;
     private String instructions;
     private int authorId;
-    private String imagePath; // Добавляем поле для хранения пути к изображению
+    private String imagePath;
 
     public Recipe(long id, String title, String description, String ingredients, String instructions, int authorId, String imagePath) {
         this.id = id;
@@ -21,7 +21,7 @@ public class Recipe implements Parcelable {
         this.ingredients = ingredients;
         this.instructions = instructions;
         this.authorId = authorId;
-        this.imagePath = imagePath; // Инициализируем поле для пути к изображению
+        this.imagePath = imagePath;
     }
 
     public void setTitle(String title) {

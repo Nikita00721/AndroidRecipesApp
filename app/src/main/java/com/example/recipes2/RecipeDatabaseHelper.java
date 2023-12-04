@@ -32,12 +32,12 @@ public class RecipeDatabaseHelper extends SQLiteOpenHelper {
     public static final String COLUMN_INSTRUCTIONS = "instructions";
     public static final String COLUMN_AUTHOR_ID = "authorId";
     public static final String COLUMN_IMAGE_RESOURCE_ID = "imageResourceId";
-    public static final String COLUMN_IMAGE_PATH = "imagePath"; // Новый столбец для хранения пути к изображению
+    public static final String COLUMN_IMAGE_PATH = "imagePath";
     private Context context;
 
     public RecipeDatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
-        this.context = context; // Сохраняем контекст
+        this.context = context;
     }
 
 
@@ -50,7 +50,7 @@ public class RecipeDatabaseHelper extends SQLiteOpenHelper {
                 COLUMN_INGREDIENTS + " TEXT, " +
                 COLUMN_INSTRUCTIONS + " TEXT, " +
                 COLUMN_AUTHOR_ID + " INTEGER, " +
-                COLUMN_IMAGE_PATH + " TEXT" + // Столбец для пути к изображению
+                COLUMN_IMAGE_PATH + " TEXT" +
                 ")";
         db.execSQL(createTableQuery);
     }
@@ -72,7 +72,7 @@ public class RecipeDatabaseHelper extends SQLiteOpenHelper {
         values.put(COLUMN_INGREDIENTS, recipe.getIngredients());
         values.put(COLUMN_INSTRUCTIONS, recipe.getInstructions());
         values.put(COLUMN_AUTHOR_ID, recipe.getAuthorId());
-        values.put(COLUMN_IMAGE_PATH, recipe.getImagePath()); // Сохраняем фактический путь к изображению
+        values.put(COLUMN_IMAGE_PATH, recipe.getImagePath());
 
         long recipeId = db.insert(TABLE_RECIPES, null, values);
         db.close();
@@ -91,7 +91,7 @@ public class RecipeDatabaseHelper extends SQLiteOpenHelper {
                 COLUMN_INGREDIENTS,
                 COLUMN_INSTRUCTIONS,
                 COLUMN_AUTHOR_ID,
-                COLUMN_IMAGE_PATH // Включаем путь к изображению
+                COLUMN_IMAGE_PATH
         };
 
         Cursor cursor = db.query(TABLE_RECIPES, columns, null, null, null, null, null);
@@ -104,10 +104,10 @@ public class RecipeDatabaseHelper extends SQLiteOpenHelper {
                 String ingredients = cursor.getString(cursor.getColumnIndex(COLUMN_INGREDIENTS));
                 String instructions = cursor.getString(cursor.getColumnIndex(COLUMN_INSTRUCTIONS));
                 int authorId = cursor.getInt(cursor.getColumnIndex(COLUMN_AUTHOR_ID));
-                String imagePath = cursor.getString(cursor.getColumnIndex(COLUMN_IMAGE_PATH)); // Получаем путь к изображению
+                String imagePath = cursor.getString(cursor.getColumnIndex(COLUMN_IMAGE_PATH));
 
                 Recipe recipe = new Recipe(id, title, description, ingredients, instructions, authorId, imagePath);
-                recipe.setImagePath(imagePath); // Устанавливаем путь к изображению
+                recipe.setImagePath(imagePath);
                 recipes.add(recipe);
             } while (cursor.moveToNext());
 
@@ -129,7 +129,7 @@ public class RecipeDatabaseHelper extends SQLiteOpenHelper {
         db.update(TABLE_RECIPES, values, COLUMN_ID + " = ?", new String[]{String.valueOf(recipe.getId())});
         db.close();
 
-        // Добавьте отладочный вывод, чтобы проверить, что путь к изображению обновляется
+//Отладочный вызов
         Log.d("RecipeDatabaseHelper", "Image path updated for recipe ID: " + recipe.getId());
     }
 
@@ -209,7 +209,7 @@ public class RecipeDatabaseHelper extends SQLiteOpenHelper {
 
         if (cursor != null && cursor.moveToFirst()) {
             int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-            String path = "file://" + cursor.getString(columnIndex); // Добавьте "file://" перед путем к файлу
+            String path = "file://" + cursor.getString(columnIndex);
             cursor.close();
             return path;
         }
