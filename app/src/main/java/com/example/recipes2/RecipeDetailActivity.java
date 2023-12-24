@@ -1,5 +1,6 @@
 package com.example.recipes2;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -8,7 +9,9 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import com.squareup.picasso.Picasso;
 
@@ -27,9 +30,20 @@ public class RecipeDetailActivity extends AppCompatActivity {
 
         selectedRecipe = getIntent().getParcelableExtra("selectedRecipe");
 
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
         if (selectedRecipe != null) {
-            Log.d("RecipeDetailActivity", "Recipe Title: " + selectedRecipe.getTitle());
-            Log.d("RecipeDetailActivity", "Recipe Description: " + selectedRecipe.getDescription());
+            TextView marqueeTitle = findViewById(R.id.toolbar_title);
+            marqueeTitle.setText(selectedRecipe.getTitle());
+            marqueeTitle.setSelected(true); // Включить бегущую строку
+            getSupportActionBar().setDisplayShowTitleEnabled(false); // Отключить обычный заголовок
         } else {
             // Обработка ситуации, когда selectedRecipe равен null
             Log.d("RecipeDetailActivity", "selectedRecipe is null");
@@ -75,11 +89,22 @@ public class RecipeDetailActivity extends AppCompatActivity {
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Удаление рецепта из базы данных
-                deleteRecipeFromDatabase(selectedRecipe.getId());
-                finish();
+                // Создаем диалоговое окно подтверждения удаления
+                new AlertDialog.Builder(RecipeDetailActivity.this)
+                        .setTitle("Подтверждение")
+                        .setMessage("Вы уверены, что хотите удалить этот рецепт?")
+                        .setPositiveButton("Удалить", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                // Удаление рецепта из базы данных
+                                deleteRecipeFromDatabase(selectedRecipe.getId());
+                                finish();
+                            }
+                        })
+                        .setNegativeButton("Отмена", null)
+                        .show();
             }
         });
+
 
 
     }

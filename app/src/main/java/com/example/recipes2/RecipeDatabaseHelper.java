@@ -200,9 +200,6 @@ public class RecipeDatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-
-
-
     public String getRealPathFromUri(ContentResolver contentResolver, Uri uri) {
         String[] projection = {MediaStore.Images.Media.DATA};
         Cursor cursor = contentResolver.query(uri, projection, null, null, null);
