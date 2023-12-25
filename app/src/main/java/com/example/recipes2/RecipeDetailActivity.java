@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
@@ -108,6 +109,13 @@ public class RecipeDetailActivity extends AppCompatActivity {
 
 
     }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        ScrollView scrollView = findViewById(R.id.scroll1);
+        scrollView.scrollTo(0, 0);
+    }
+
     private void deleteRecipeFromDatabase(long recipeId) {
         RecipeDatabaseHelper databaseHelper = new RecipeDatabaseHelper(this);
 
