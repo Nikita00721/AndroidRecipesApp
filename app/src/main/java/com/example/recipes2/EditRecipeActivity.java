@@ -5,10 +5,16 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.squareup.picasso.Picasso;
+
+import java.io.File;
+
 public class EditRecipeActivity extends AppCompatActivity {
+    private ImageView recipeImageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -19,7 +25,15 @@ public class EditRecipeActivity extends AppCompatActivity {
         Intent intent = getIntent();
         Recipe selectedRecipe = intent.getParcelableExtra("selectedRecipe");
 
+
+        recipeImageView = findViewById(R.id.recipeImageView);
+
         // Находим EditText для редактирования каждого поля рецепта
+        if (selectedRecipe.getImagePath() != null && !selectedRecipe.getImagePath().isEmpty()) {
+            File imageFile = new File(selectedRecipe.getImagePath());
+            Picasso.get().load(imageFile).into(recipeImageView);
+        }
+
         EditText editTitle = findViewById(R.id.editTitle);
         EditText editDescription = findViewById(R.id.editDescription);
         EditText editIngredients = findViewById(R.id.editIngredients);
