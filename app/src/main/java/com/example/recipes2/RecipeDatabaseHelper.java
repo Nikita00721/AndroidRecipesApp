@@ -219,4 +219,14 @@ public class RecipeDatabaseHelper extends SQLiteOpenHelper {
         db.delete("recipes", "_id=?", new String[]{String.valueOf(recipeId)});
         db.close();
     }
+
+    public void updateImagePath(long recipeId, String imagePath) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_IMAGE_PATH, imagePath);
+
+        db.update(TABLE_RECIPES, values, COLUMN_ID + " = ?", new String[]{String.valueOf(recipeId)});
+        db.close();
+    }
+
 }
