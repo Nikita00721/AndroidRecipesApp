@@ -57,9 +57,9 @@ public class RecipeDetailActivity extends AppCompatActivity {
         editRecipeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(RecipeDetailActivity.this, EditRecipeActivity.class);
-                intent.putExtra("selectedRecipe", selectedRecipe);
-                startActivityForResult(intent, EDIT_RECIPE_REQUEST_CODE);
+                Intent editIntent = new Intent(RecipeDetailActivity.this, EditRecipeActivity.class);
+                editIntent.putExtra("selectedRecipe", selectedRecipe);
+                startActivityForResult(editIntent, EDIT_RECIPE_REQUEST_CODE);
             }
         });
 
@@ -105,10 +105,9 @@ public class RecipeDetailActivity extends AppCompatActivity {
                         .show();
             }
         });
-
-
-
     }
+
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -122,6 +121,11 @@ public class RecipeDetailActivity extends AppCompatActivity {
         databaseHelper.deleteRecipe(recipeId);
     }
 
+    public void openEditRecipeActivity(Recipe selectedRecipe) {
+        Intent editIntent = new Intent(this, EditRecipeActivity.class);
+        editIntent.putExtra("selectedRecipe", selectedRecipe);
+        startActivityForResult(editIntent, EDIT_RECIPE_REQUEST_CODE);
+    }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -145,6 +149,8 @@ public class RecipeDetailActivity extends AppCompatActivity {
 
         if (selectedRecipe.getImagePath() != null && !selectedRecipe.getImagePath().isEmpty()) {
             File imageFile = new File(selectedRecipe.getImagePath());
+            Picasso.get().invalidate(imageFile);
+
             Picasso.get().load(imageFile).into(recipeImageView);
         }
     }

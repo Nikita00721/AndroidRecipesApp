@@ -41,6 +41,7 @@ public class EditRecipeActivity extends AppCompatActivity {
         recipeImageView = findViewById(R.id.recipeImageView);
         if (selectedRecipe.getImagePath() != null && !selectedRecipe.getImagePath().isEmpty()) {
             File imageFile = new File(selectedRecipe.getImagePath());
+            Picasso.get().invalidate(imageFile);
             Picasso.get().load(imageFile).into(recipeImageView);
         }
 
@@ -59,6 +60,8 @@ public class EditRecipeActivity extends AppCompatActivity {
                             selectedImageUri = result.getData().getData();
                             // Обновляем изображение на экране после выбора нового изображения
                             recipeImageView.setImageURI(selectedImageUri);
+                            selectedRecipe.setImagePath(selectedImageUri.toString());
+                            Picasso.get().load(selectedImageUri).into(recipeImageView);
                         }
                     }
                 }
@@ -93,12 +96,18 @@ public class EditRecipeActivity extends AppCompatActivity {
                 selectedRecipe.setInstructions(editedInstructions);
 
                 RecipeDatabaseHelper databaseHelper = new RecipeDatabaseHelper(EditRecipeActivity.this);
+                String imagePath = databaseHelper.saveImageToDatabase(selectedImageUri, selectedRecipe.getId());
+
                 if (selectedImageUri != null) {
-                    String imagePath = databaseHelper.saveImageToDatabase(selectedImageUri, selectedRecipe.getId());
                     if (imagePath != null) {
                         selectedRecipe.setImagePath(imagePath);
+                        databaseHelper.updateImagePath(selectedRecipe.getId(), imagePath);
                     }
+                    Picasso.get().invalidate(selectedImageUri);
+                    Picasso.get().load(selectedImageUri).into(recipeImageView);
                 }
+
+
                 databaseHelper.updateRecipe(selectedRecipe);
 
                 Intent resultIntent = new Intent();
