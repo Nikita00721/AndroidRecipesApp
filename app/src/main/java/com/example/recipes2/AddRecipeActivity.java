@@ -4,6 +4,8 @@ import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -16,6 +18,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
@@ -82,27 +85,32 @@ public class AddRecipeActivity extends AppCompatActivity {
                 String ingredients = ingredientsEditText.getText().toString();
                 String instructions = instructionsEditText.getText().toString();
 
-                Recipe newRecipe = new Recipe(0, title, description, ingredients, instructions, 0, "");
+                boolean fieldsAreEmpty = title.trim().isEmpty() || description.trim().isEmpty() || ingredients.trim().isEmpty() || instructions.trim().isEmpty();
 
-                long recipeId = databaseHelper.insertRecipe(newRecipe);
-
-                if (recipeId > 0) {
-                    newRecipe.setId(recipeId);
-                    if (selectedImageUri != null) {
-                        String imagePath = saveImageToDatabase(selectedImageUri, recipeId);
-                        if (imagePath != null) {
-                            newRecipe.setImagePath(imagePath);
-                        }
-                    }
-
-                    databaseHelper.updateRecipe(newRecipe);
-
-                    finish();
+                if (fieldsAreEmpty) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(AddRecipeActivity.this);
+                    builder.setMessage("Вы точно хотите создать рецепт без заполнения всех полей?")
+                            .setPositiveButton("Да", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    // Продолжить добавление рецепта
+                                    addRecipe();
+                                }
+                            })
+                            .setNegativeButton("Отмена", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    // Отмена операции
+                                    dialog.dismiss();
+                                }
+                            });
+                    // Создание и отображение диалогового окна
+                    builder.create().show();
                 } else {
-                    // Обработка ошибки
+                    // Все поля заполнены, добавление рецепта
+                    addRecipe();
                 }
             }
         });
+
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -150,6 +158,33 @@ public class AddRecipeActivity extends AppCompatActivity {
         } catch (IOException e) {
             e.printStackTrace();
             return null;
+        }
+    }
+
+    // Метод для добавления рецепта
+    private void addRecipe() {
+        String title = titleEditText.getText().toString();
+        String description = descriptionEditText.getText().toString();
+        String ingredients = ingredientsEditText.getText().toString();
+        String instructions = instructionsEditText.getText().toString();
+        // Оставшаяся часть кода для добавления рецепта без проверки пустых полей
+        Recipe newRecipe = new Recipe(0, title, description, ingredients, instructions, 0, "");
+        long recipeId = databaseHelper.insertRecipe(newRecipe);
+
+        if (recipeId > 0) {
+            newRecipe.setId(recipeId);
+            if (selectedImageUri != null) {
+                String imagePath = saveImageToDatabase(selectedImageUri, recipeId);
+                if (imagePath != null) {
+                    newRecipe.setImagePath(imagePath);
+                }
+            }
+
+            databaseHelper.updateRecipe(newRecipe);
+
+            finish();
+        } else {
+            // Обработка ошибки
         }
     }
 
