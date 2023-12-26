@@ -63,7 +63,6 @@ public class RecipeDetailActivity extends AppCompatActivity {
             }
         });
 
-
         recipeImageView = findViewById(R.id.recipeImageView);
         titleTextView = findViewById(R.id.titleTextView);
         descriptionTextView = findViewById(R.id.descriptionTextView);
@@ -107,7 +106,6 @@ public class RecipeDetailActivity extends AppCompatActivity {
         });
     }
 
-
     @Override
     protected void onResume() {
         super.onResume();
@@ -121,11 +119,6 @@ public class RecipeDetailActivity extends AppCompatActivity {
         databaseHelper.deleteRecipe(recipeId);
     }
 
-    public void openEditRecipeActivity(Recipe selectedRecipe) {
-        Intent editIntent = new Intent(this, EditRecipeActivity.class);
-        editIntent.putExtra("selectedRecipe", selectedRecipe);
-        startActivityForResult(editIntent, EDIT_RECIPE_REQUEST_CODE);
-    }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -154,5 +147,4 @@ public class RecipeDetailActivity extends AppCompatActivity {
             Picasso.get().load(imageFile).into(recipeImageView);
         }
     }
-
 }

@@ -10,8 +10,6 @@ import android.net.Uri;
 import android.provider.MediaStore;
 import android.util.Log;
 
-import com.example.recipes2.RecipeAdapter;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -198,20 +196,6 @@ public class RecipeDatabaseHelper extends SQLiteOpenHelper {
             e.printStackTrace();
             return false;
         }
-    }
-
-    public String getRealPathFromUri(ContentResolver contentResolver, Uri uri) {
-        String[] projection = {MediaStore.Images.Media.DATA};
-        Cursor cursor = contentResolver.query(uri, projection, null, null, null);
-
-        if (cursor != null && cursor.moveToFirst()) {
-            int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-            String path = "file://" + cursor.getString(columnIndex);
-            cursor.close();
-            return path;
-        }
-
-        return null;
     }
 
     public void deleteRecipe(long recipeId) {

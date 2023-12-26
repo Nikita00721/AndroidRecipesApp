@@ -1,8 +1,6 @@
 package com.example.recipes2;
 
 import android.content.Context;
-import android.content.Intent;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,8 +10,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.recipes2.R;
-import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
@@ -48,9 +44,6 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
         } else {
             holder.recipeImageView.setImageResource(R.drawable.default_recipe_image);
         }
-
-        // Обработка нажатия на карточк
-
     }
 
     public Recipe getRecipeAtPosition(int position) {
@@ -77,11 +70,6 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
             recipeTitleTextView = itemView.findViewById(R.id.recipeTitleTextView);
             recipeDescriptionTextView = itemView.findViewById(R.id.recipeDescriptionTextView);
         }
-    }
-
-
-    public void setRecipes(List<Recipe> recipes) {
-        this.recipes = recipes;
     }
 
     public void updateRecipes(List<Recipe> recipes) {

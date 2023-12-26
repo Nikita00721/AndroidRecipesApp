@@ -3,8 +3,6 @@ package com.example.recipes2;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.io.Serializable;
-
 public class Recipe implements Parcelable {
     private long id;
     private String title;
